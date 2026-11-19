@@ -6,7 +6,7 @@
 ## Read first — your slice, not whole files
 
 1. Your task: `make prompt S=<id>` prints the common header and your session's prompt
-   (`docs/sessions/<id>-<slug>.md`).
+   (`docs/sessions/<id>-<slug>.md`). A new project starts with session `00` (planning).
 2. `docs/MASTER_PLAN.md` — the design. Do not re-derive or relitigate it. Read the §§ your
    prompt names, in full, before writing code; other §§ when a question sends you there.
 3. `docs/decisions/` — one file per decision: why things are as they are and what was
@@ -25,7 +25,8 @@ plan or your prompt, stop and report it in the PR description before writing cod
 - Read what the work in front of you needs, when it needs it. Large data files (fixtures,
   CSVs) are inspected by script, `head` or `grep`, never read whole.
 - Read at the source yourself what you port or edit, and every critical-path mechanic.
-- Never poll. Background subagents and CI report when they finish.
+- Never poll in a loop. Background subagents report when they finish; for CI, one blocking
+  `gh pr checks <n> --watch`.
 - `docs/archive/` and finished sessions in `docs/sessions/done/` are searched, never read whole.
 
 ## Build for evidence
@@ -64,8 +65,10 @@ plan or your prompt, stop and report it in the PR description before writing cod
 - **Honest degradation.** Missing or immature input → explicit status. Never fabricate,
   silently interpolate or substitute an unlabelled proxy.
 - Pydantic v2 only; domain models frozen with `extra="forbid"` (`myproject.domain.DomainModel`).
-- Timezone-aware UTC datetimes; local time through `zoneinfo`. `Decimal` for money.
-- asyncio for I/O; no blocking calls in the event loop; no mutable module globals.
+- Timezone-aware UTC datetimes; local time through `zoneinfo`. `Decimal` wherever money is.
+- No mutable module globals. When the project does concurrent I/O: asyncio, and no blocking
+  calls in the event loop. Rules that belong to one project's domain go in its
+  `MASTER_PLAN.md` → Constraints, not here.
 - Search before creating. Extend existing code rather than writing parallel versions.
 - `mypy --strict` on `src/`. Architecture boundaries are import-linter contracts in
   `pyproject.toml`; a new layer gets its contract in the same PR.
@@ -78,8 +81,9 @@ plan or your prompt, stop and report it in the PR description before writing cod
 
 - `make check` = `ruff format --check`, `ruff check`, `mypy --strict src`, `lint-imports`,
   `pytest` (parallel) with the coverage floor. Green before opening a PR and before merging.
-- No network in tests: HTTP mocked with `respx`; fixtures in `tests/fixtures/` with a sidecar
-  note of source and date. Live probes are separate commands, never tests.
+- No network in tests: HTTP mocked (`respx` for `httpx`, added with the first HTTP client);
+  fixtures in `tests/fixtures/` with a sidecar note of source and date. Live probes are
+  separate commands, never tests.
 - Critical paths need failure-branch tests, not only the happy path.
 - The coverage floor in `pyproject.toml` is raised on purpose, never lowered to fit.
 
@@ -100,7 +104,10 @@ public one runs free. Follow these rules either way, so a project can go private
 
 ## Session workflow
 
-1. Read the files above. Branch `s<NN>-<short-slug>` from an up-to-date `main`.
+1. Read the files above. Work on the branch the environment gives you; where it gives none,
+   branch `s<NN>-<short-slug>` from an up-to-date `main`. One session at a time per
+   repository: every session edits the version, `CHANGELOG.md` and ROADMAP. If `main` moved
+   while you worked, merge it into your branch and take the next free version.
 2. Put your plan (5–15 bullets) at the top of the PR description. Do not wait for approval
    unless a stop condition applies.
 3. Keep to your prompt's scope; anything else goes to "Follow-ups" in the PR and ROADMAP.
@@ -114,6 +121,10 @@ public one runs free. Follow these rules either way, so a project can go private
    dependencies your work changed — never to add scope. Log each edit.
 6. If you cannot finish everything with quality, merge a coherent, tested subset and add
    `docs/sessions/<id>a-<slug>.md` with the remainder.
+7. Leave the next session ready: its prompt in `docs/sessions/` still matches what you built
+   (fix it, logging the edit), and ROADMAP → "What runs next" names it. If the plan has no
+   next session written, write its prompt from `MASTER_PLAN.md`, in the format of
+   `docs/sessions/TEMPLATE.md`, with the model the owner should pick.
 
 ## End-of-session protocol (mandatory, performed by the agent)
 
@@ -147,10 +158,10 @@ three rounds with blockers left: leave the PR open, label it `needs-owner`, and 
 ## Commands
 
 ```
-make setup                 # newest uv, uv sync, pre-commit hooks (run it first)
+make setup                 # newest uv and Python, uv sync (cloud sessions run it on start)
 make check                 # format, lint, types, import contracts, tests, coverage
 make test                  # pytest only
-make prompt S=01           # the prompt for session 01
+make prompt S=00           # the prompt for session 00 (or 01, maintenance…)
 uv run myproject --help
 ```
 

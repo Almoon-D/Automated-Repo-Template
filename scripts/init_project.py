@@ -1,21 +1,28 @@
-"""Turn the template into a project: rename ``myproject`` everywhere, once.
+"""Turn the template into a project, once: names, author, GitHub user and dates.
 
 Usage::
 
-    python3 scripts/init_project.py <name> [--author "Your Name"]
+    python3 scripts/init_project.py <name> [--author "Your Name"] [--github-user <user>]
 
 ``<name>`` is the Python package name: lowercase letters, digits and underscores. The script
-rewrites every tracked text file, renames ``src/myproject`` and deletes itself.
+rewrites every tracked text file, renames ``src/myproject``, removes the template's usage
+section from the README, dates decision 0001 today, reports any placeholder left and
+deletes itself. Session 00 runs it (docs/sessions/00-plan.md).
 """
 
 import argparse
+import datetime as dt
 import re
 import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 PLACEHOLDER = "myproject"
 NAME_RE = re.compile(r"[a-z][a-z0-9_]*")
+USAGE_SECTION_RE = re.compile(r"^## Cómo usar esta plantilla.*?(?=^## )", re.MULTILINE | re.DOTALL)
+DATE_LINE_RE = re.compile(r"^- Date: \d{4}-\d{2}-\d{2}", re.MULTILINE)
+LEFTOVERS = ("myproject", "Your Name", "<tu-usuario>")
 
 
 def tracked_files(root: Path) -> list[Path]:
@@ -25,31 +32,61 @@ def tracked_files(root: Path) -> list[Path]:
     return [root / line for line in out.splitlines() if line]
 
 
+def rewrite(path: Path, transform: Callable[[str], str]) -> None:
+    text = path.read_text(encoding="utf-8")
+    new = transform(text)
+    if new != text:
+        path.write_text(new, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     parser.add_argument("name")
     parser.add_argument("--author")
+    parser.add_argument("--github-user")
     args = parser.parse_args()
     if not NAME_RE.fullmatch(args.name):
         print(f"{args.name!r}: use lowercase letters, digits and underscores", file=sys.stderr)
         return 2
     root = Path(__file__).resolve().parents[1]
     this = Path(__file__).resolve()
-    for path in tracked_files(root):
-        if path.resolve() == this or not path.is_file():
-            continue
+    replacements = {PLACEHOLDER: args.name}
+    if args.author:
+        replacements["Your Name"] = args.author
+    if args.github_user:
+        replacements["<tu-usuario>"] = args.github_user
+
+    files = [p for p in tracked_files(root) if p.resolve() != this and p.is_file()]
+    for path in files:
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
-        new = text.replace(PLACEHOLDER, args.name)
-        if args.author:
-            new = new.replace("Your Name", args.author)
+        new = text
+        for old, value in replacements.items():
+            new = new.replace(old, value)
         if new != text:
             path.write_text(new, encoding="utf-8")
+
+    rewrite(root / "README.md", lambda t: USAGE_SECTION_RE.sub("", t, count=1))
+    today = dt.date.today().isoformat()
+    rewrite(
+        root / "docs" / "decisions" / "0001-repository-from-template.md",
+        lambda t: DATE_LINE_RE.sub(f"- Date: {today}", t, count=1),
+    )
     (root / "src" / PLACEHOLDER).rename(root / "src" / args.name)
     this.unlink()
-    print(f"Renamed to {args.name}. Next: uv lock && make setup && make check, then commit.")
+
+    left = [
+        f"{path.relative_to(root)}: {marker}"
+        for path in tracked_files(root)
+        if path.is_file() and path.suffix not in {".lock"}
+        for marker in LEFTOVERS
+        if marker in path.read_text(encoding="utf-8", errors="ignore")
+    ]
+    print(f"Renamed to {args.name}. Next: uv lock && make check, then commit.")
+    if left:
+        print("Placeholders left (fill them in):\n  " + "\n  ".join(left))
     return 0
 
 

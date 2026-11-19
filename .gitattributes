@@ -1,2 +1,2 @@
-*.sql text eol=lf
-*.yaml text eol=lf
+# Every text file is stored and checked out with LF, also on Windows.
+* text=auto eol=lf

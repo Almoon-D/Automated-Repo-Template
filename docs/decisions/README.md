@@ -6,4 +6,5 @@ later one supersedes it and both say so. This index lists every decision, newest
 
 | # | Decision | Status |
 |---|---|---|
+| [0002](0002-template-review.md) | Changes from the external review of the template | accepted |
 | [0001](0001-repository-from-template.md) | Repository conventions from the template | accepted |
