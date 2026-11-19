@@ -19,8 +19,12 @@ menciona se deja como viene. "—" = no aparece en un repo privado con el plan F
    submission** ❌; **Push protection** ✅ si aparece.
 6. *Settings → Applications → Claude* (de tu cuenta): acceso al repo nuevo.
 7. Si es público: la última sección.
-8. Una tarea programada mensual con el prompt de mantenimiento (`make prompt S=maintenance`),
-   para no tener que acordarte.
+8. La tarea mensual de mantenimiento: pídesela a Claude en cualquier chat o sesión, por
+   ejemplo *"Crea una tarea programada el día 2 de cada mes en el repo `<repo>` con el prompt:
+   Ejecuta la sesión de mantenimiento: make prompt S=maintenance"* (el día 2, para que el lote
+   de Dependabot del día 1 ya esté abierto).
+9. Una sola vez para todos tus repos: el presupuesto de Actions de 0 € de tu cuenta (al
+   final de esta guía), si aún no lo tienes.
 
 ## General
 

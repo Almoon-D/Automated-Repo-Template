@@ -18,7 +18,9 @@ Turn the owner's idea into a plan that later sessions can build without asking a
    and for whom; what it must never do; budget (free tiers, paid APIs, LLM spend); data
    sources; where it runs; what "done" looks like. Offer options with a recommendation when
    they do not know; never leave a section empty.
-3. Fill `MASTER_PLAN.md`. Its hard limits also go to AGENTS.md → Hard rules, each with how
+3. Write the one-sentence description of the project in three places: `README.md` (first
+   line, in Spanish), `description` in `pyproject.toml` and the package docstring in
+   `src/<name>/__init__.py` (in English). Fill `MASTER_PLAN.md`. Its hard limits also go to AGENTS.md → Hard rules, each with how
    code will enforce it; the project's own rules (money, time zones, concurrency) go to
    Constraints.
 4. Split the build into sessions, each small enough for one session and ending in something

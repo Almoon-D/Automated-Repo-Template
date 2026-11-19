@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Claude Code SessionStart hook (.claude/settings.json): in a cloud session, prepare the
-# environment before the agent starts, so no session spends turns installing. Local
-# sessions are left alone: the owner's machine runs `make setup` when it needs to.
+# Claude Code SessionStart hook (.claude/settings.json), on start and on resume: in a cloud
+# session, bring uv and Python to their newest releases and install the locked environment
+# (~15 s) before the agent starts. `uv run --locked` would build the environment anyway;
+# what this adds is fresh toolchains. Local sessions are left alone: the owner's machine
+# runs `make setup` when it needs to.
 set -uo pipefail
 [ "${CLAUDE_CODE_REMOTE:-}" = "true" ] || exit 0
 log="${TMPDIR:-/tmp}/make-setup.log"
