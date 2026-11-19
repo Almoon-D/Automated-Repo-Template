@@ -5,7 +5,10 @@ UV_RUN := uv run --locked
 
 .PHONY: setup check test fmt lint types imports format-check coverage prompt
 
-setup:  ## Install the locked environment (uv-managed Python) and the pre-commit hooks
+setup:  ## Update uv, install the locked environment (uv-managed Python) and the hooks
+	@# An old uv does not know the newest Python. `self update` works for the standalone
+	@# installer; cloud sessions ship uv another way, where `tool install` replaces it.
+	uv self update 2>/dev/null || uv tool install --force uv
 	uv sync --locked
 	$(UV_RUN) pre-commit install
 

@@ -2,8 +2,10 @@
 
 The version is ``pyproject.toml``'s ``project.version`` (plain semantic versioning); the
 notes are the body of that version's ``## [x.y.z] - YYYY-MM-DD`` section of
-``CHANGELOG.md``; versions below 1.0.0 are pre-releases. A version without a non-empty
-section is an error, never an empty release. Standard library only, so the release
+``CHANGELOG.md``; versions below 1.0.0 are pre-releases. Version 0.0.0 is a project that
+has not released yet (the template itself, or a project before its first session): nothing
+is published and no section is needed. Any other version without a non-empty section is an
+error, never an empty release. Standard library only, so the release
 workflow runs it with the runner's own Python; ``tests/unit/test_release_notes.py`` runs the
 same functions against the repository on every change.
 
@@ -23,6 +25,7 @@ from pathlib import Path
 SEMVER_RE = re.compile(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)")
 SECTION_RE = re.compile(r"^## \[(?P<version>[^\]]+)\](?: - (?P<date>\d{4}-\d{2}-\d{2}))?\s*$")
 FIRST_STABLE_MAJOR = 1
+UNRELEASED_VERSION = "0.0.0"
 
 
 class ReleaseError(Exception):
@@ -81,19 +84,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         version = project_version((args.root / "pyproject.toml").read_text(encoding="utf-8"))
+        if version == UNRELEASED_VERSION:
+            return _write_outputs({"publish": "false", "version": version}, args.github_output)
         notes = changelog_section((args.root / "CHANGELOG.md").read_text(encoding="utf-8"), version)
     except (ReleaseError, OSError) as exc:
         print(f"::error::{exc}", file=sys.stderr)
         return 1
     args.notes_file.write_text(notes, encoding="utf-8")
     outputs = {
+        "publish": "true",
         "version": version,
         "tag": f"v{version}",
         "prerelease": "true" if is_prerelease(version) else "false",
     }
+    return _write_outputs(outputs, args.github_output)
+
+
+def _write_outputs(outputs: dict[str, str], github_output: Path | None) -> int:
     lines = "".join(f"{key}={value}\n" for key, value in outputs.items())
-    if args.github_output is not None:
-        with args.github_output.open("a", encoding="utf-8") as handle:
+    if github_output is not None:
+        with github_output.open("a", encoding="utf-8") as handle:
             handle.write(lines)
     sys.stdout.write(lines)
     return 0
