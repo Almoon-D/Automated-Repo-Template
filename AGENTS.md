@@ -83,9 +83,10 @@ plan or your prompt, stop and report it in the PR description before writing cod
 - Critical paths need failure-branch tests, not only the happy path.
 - The coverage floor in `pyproject.toml` is raised on purpose, never lowered to fit.
 
-## CI budget (private repository on GitHub Free)
+## CI budget
 
-Every CI run is billed against a small monthly allowance.
+On GitHub Free, a private repository bills every CI run against a small monthly allowance; a
+public one runs free. Follow these rules either way, so a project can go private at any time.
 
 - Run `make check` locally and push once it is green; batch fixes into one push, never one
   push per fix. Each push to an open PR is a full CI run.

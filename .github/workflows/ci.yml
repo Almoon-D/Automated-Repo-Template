@@ -9,7 +9,8 @@ name: CI
 # branch protection or GitHub's auto-merge, both unavailable to private repositories on
 # GitHub Free. Majors stay open for the maintenance session (docs/sessions/maintenance.md).
 #
-# Budget (private repository on GitHub Free): pull requests only. A push to `main` is not
+# Budget (private repositories on GitHub Free pay in minutes; public ones run free, same
+# rules): pull requests only. A push to `main` is not
 # rebuilt, because main only moves by squash-merging a pull request that CI has just tested,
 # and the agent runs `make check` on main after every merge (AGENTS.md, end-of-session
 # protocol). Run it by hand from the Actions tab (workflow_dispatch) when main needs a proof.
