@@ -6,7 +6,7 @@ Usage::
 
 ``<name>`` is the Python package name: lowercase letters, digits and underscores. The script
 rewrites every tracked text file, renames ``src/myproject``, removes the template's usage
-section from the README, dates decision 0001 today, reports any placeholder left and
+section from the README, dates the inherited decisions today, reports any placeholder left and
 deletes itself. Session 00 runs it (docs/sessions/00-plan.md).
 """
 
@@ -22,7 +22,14 @@ PLACEHOLDER = "myproject"
 NAME_RE = re.compile(r"[a-z][a-z0-9_]*")
 USAGE_SECTION_RE = re.compile(r"^## Cómo usar esta plantilla.*?(?=^## )", re.MULTILINE | re.DOTALL)
 DATE_LINE_RE = re.compile(r"^- Date: \d{4}-\d{2}-\d{2}", re.MULTILINE)
-LEFTOVERS = ("myproject", "Your Name", "<tu-usuario>")
+INHERITED_DECISIONS = ("0001-repository-from-template.md", "0002-template-review.md")
+LEFTOVERS = (
+    "myproject",
+    "Your Name",
+    "<tu-usuario>",
+    "One sentence: what this project does and for whom.",
+    "Una frase: qué hace y para quién.",
+)
 
 
 def tracked_files(root: Path) -> list[Path]:
@@ -70,16 +77,22 @@ def main() -> int:
 
     rewrite(root / "README.md", lambda t: USAGE_SECTION_RE.sub("", t, count=1))
     today = dt.date.today().isoformat()
-    rewrite(
-        root / "docs" / "decisions" / "0001-repository-from-template.md",
-        lambda t: DATE_LINE_RE.sub(f"- Date: {today}", t, count=1),
-    )
+    for decision in INHERITED_DECISIONS:
+        rewrite(
+            root / "docs" / "decisions" / decision,
+            lambda t: DATE_LINE_RE.sub(f"- Date: {today}", t, count=1),
+        )
     (root / "src" / PLACEHOLDER).rename(root / "src" / args.name)
     this.unlink()
 
+    old_src, new_src = f"src/{PLACEHOLDER}/", f"src/{args.name}/"
+    current = [
+        root / str(path.relative_to(root)).replace(old_src, new_src, 1)
+        for path in tracked_files(root)
+    ]
     left = [
         f"{path.relative_to(root)}: {marker}"
-        for path in tracked_files(root)
+        for path in current
         if path.is_file() and path.suffix not in {".lock"}
         for marker in LEFTOVERS
         if marker in path.read_text(encoding="utf-8", errors="ignore")

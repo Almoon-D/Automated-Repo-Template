@@ -1,4 +1,4 @@
-"""myproject: one sentence on what it does."""
+"""myproject: One sentence: what this project does and for whom."""
 
 from importlib.metadata import version
 
