@@ -21,7 +21,7 @@ def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_cli_config_prints_settings(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["config"]) == 0
-    assert '"timezone"' in capsys.readouterr().out
+    assert '"log_level"' in capsys.readouterr().out
 
 
 def test_cli_without_command_prints_help(capsys: pytest.CaptureFixture[str]) -> None:
@@ -31,16 +31,21 @@ def test_cli_without_command_prints_help(capsys: pytest.CaptureFixture[str]) -> 
 
 def test_owner_overrides_defaults(tmp_path: Path) -> None:
     (tmp_path / "defaults").mkdir()
-    (tmp_path / "defaults" / "core.yaml").write_text("timezone: UTC\nlog_level: INFO\n")
+    (tmp_path / "defaults" / "core.yaml").write_text("log_level: INFO\n")
     (tmp_path / "owner.yaml").write_text("core:\n  log_level: DEBUG\n")
-    settings = load_settings(tmp_path)
-    assert settings.core.log_level == "DEBUG"
-    assert settings.core.timezone == "UTC"
+    assert load_settings(tmp_path).core.log_level == "DEBUG"
+
+
+def test_an_invalid_log_level_is_an_error(tmp_path: Path) -> None:
+    (tmp_path / "defaults").mkdir()
+    (tmp_path / "defaults" / "core.yaml").write_text("log_level: LOUD\n")
+    with pytest.raises(ValueError, match="log_level"):
+        load_settings(tmp_path)
 
 
 def test_unknown_key_is_an_error(tmp_path: Path) -> None:
     (tmp_path / "defaults").mkdir()
-    (tmp_path / "defaults" / "core.yaml").write_text("timezone: UTC\nlog_level: INFO\ntypo: 1\n")
+    (tmp_path / "defaults" / "core.yaml").write_text("log_level: INFO\ntypo: 1\n")
     with pytest.raises(ValueError, match="typo"):
         load_settings(tmp_path)
 

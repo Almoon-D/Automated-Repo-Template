@@ -6,6 +6,22 @@ menú *Settings*, en el mismo orden. Está escrita para un proyecto **privado co
 Free**; si el proyecto es público, aplica además la última sección. Lo que esta guía no
 menciona se deja como viene. "—" = no aparece en un repo privado con el plan Free.
 
+## Lo que hay que cambiar (el resto de la guía explica cada opción)
+
+1. *General → Releases*: **Enable release immutability** ✅.
+2. *General → Features*: **Wikis**, **Projects** ❌ (Discussions y Sponsorships ya vienen ❌).
+3. *General → Pull Requests*: **Allow merge commits** ❌ y **Allow rebase merging** ❌; squash
+   con **Pull request title and description**; **Automatically delete head branches** ✅.
+4. *Actions → General*: solo las acciones permitidas (lista abajo), **Require actions to be
+   pinned to a full-length commit SHA** ✅, *Workflow permissions* de solo lectura.
+5. *Advanced Security*: **Dependency graph**, **Dependabot alerts**, **Malware alerts**,
+   **Dependabot security updates**, **Grouped security updates** ✅; **Automatic dependency
+   submission** ❌; **Push protection** ✅ si aparece.
+6. *Settings → Applications → Claude* (de tu cuenta): acceso al repo nuevo.
+7. Si es público: la última sección.
+8. Una tarea programada mensual con el prompt de mantenimiento (`make prompt S=maintenance`),
+   para no tener que acordarte.
+
 ## General
 
 | Opción | Valor | Por qué |
@@ -71,8 +87,8 @@ issues, útil para equipos de personas. Para un dueño con sesiones de IA pierde
 | Pages → Build and deployment | Source: *Deploy from a branch*, Branch: **None** | Así Pages queda desactivado; no publicamos una web. |
 
 **Actions → General.**
-- *Actions permissions*: **Allow Almoon-D, and select non-Almoon-D, actions and reusable
-  workflows**, con **Allow actions created by GitHub** y, en la lista,
+- *Actions permissions*: **Allow <tu-usuario>, and select non-<tu-usuario>, actions and
+  reusable workflows**, con **Allow actions created by GitHub** y, en la lista,
   `astral-sh/setup-uv@*, dependabot/fetch-metadata@*`. Una acción nueva en un workflow se
   añade aquí en el mismo momento.
 - **Require actions to be pinned to a full-length commit SHA**: ✅ (todas lo están).

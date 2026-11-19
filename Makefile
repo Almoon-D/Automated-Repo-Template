@@ -5,14 +5,13 @@ UV_RUN := uv run --locked
 
 .PHONY: setup check test fmt lint types imports format-check coverage prompt
 
-setup:  ## Update uv, install the locked environment (uv-managed Python) and the hooks
+setup:  ## Update uv and Python, install the locked environment
 	@# An old uv does not know the newest Python. `self update` works for the standalone
 	@# installer; cloud sessions ship uv another way, where `tool install` replaces it.
 	uv self update 2>/dev/null || uv tool install --force uv
 	@# Newest patch of every installed Python (3.15.2 → 3.15.3); the environment follows it.
 	uv python upgrade
 	uv sync --locked
-	$(UV_RUN) pre-commit install
 
 check: format-check lint types imports coverage  ## Everything CI runs
 

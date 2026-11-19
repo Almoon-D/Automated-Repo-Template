@@ -5,7 +5,7 @@ typo can never be silently ignored.
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict
@@ -20,8 +20,7 @@ class Section(BaseModel):
 class CoreSettings(Section):
     """``config/defaults/core.yaml``: replace with the project's first real section."""
 
-    timezone: str
-    log_level: str
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 class Settings(Section):

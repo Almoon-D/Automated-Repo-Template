@@ -1,6 +1,7 @@
 """Command-line entry point: ``uv run myproject --help``."""
 
 import argparse
+import logging
 from collections.abc import Sequence
 
 from myproject import __version__
@@ -13,10 +14,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("config", help="validate the configuration and print it")
     args = parser.parse_args(argv)
-    if args.command == "config":
-        print(load_settings().model_dump_json(indent=2))
+    if args.command is None:
+        parser.print_help()
         return 0
-    parser.print_help()
+    settings = load_settings()
+    logging.basicConfig(level=settings.core.log_level)
+    if args.command == "config":
+        print(settings.model_dump_json(indent=2))
     return 0
 
 

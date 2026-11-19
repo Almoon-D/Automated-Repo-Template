@@ -2,10 +2,11 @@ name: CI
 
 # `ci` runs exactly what a contributor runs locally: `make check`. It is the check a ruleset
 # can require, so it always reports: a pull request that touches only prose (docs/, *.md,
-# LICENSE) gets a green `ci` in seconds without installing anything.
+# LICENSE) gets a green `ci` in seconds without installing anything. CHANGELOG.md is not
+# prose here: a test reads it.
 #
-# `dependabot-merge` squash-merges Dependabot's minor and patch updates (and security
-# updates that are not majors) once `ci` is green. It merges directly, so it works without
+# `dependabot-merge` squash-merges Dependabot's minor and patch updates (security updates
+# included) once `ci` is green; anything else, or an update type it cannot read, stays open. It merges directly, so it works without
 # branch protection or GitHub's auto-merge, both unavailable to private repositories on
 # GitHub Free. Majors stay open for the maintenance session (docs/sessions/maintenance.md).
 #
@@ -50,7 +51,8 @@ jobs:
             echo "code=true" >> "$GITHUB_OUTPUT"; exit 0
           fi
           files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
-          code=$(grep -Ev '^(docs/|LICENSE$|\.github/pull_request_template\.md$)|\.md$' <<<"$files" || true)
+          code=$(grep -Ev '^(docs/|LICENSE$)|\.md$' <<<"$files" || true)
+          if grep -qx 'CHANGELOG.md' <<<"$files"; then code=CHANGELOG.md; fi
           if [ -n "$code" ]; then
             echo "code=true" >> "$GITHUB_OUTPUT"
           else
@@ -90,8 +92,10 @@ jobs:
         id: meta
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98  # v3.1.0
 
-      - name: Merge unless it is a major
-        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+      - name: Merge minor and patch updates only
+        if: >-
+          steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+          steps.meta.outputs.update-type == 'version-update:semver-patch'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}

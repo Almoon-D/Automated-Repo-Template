@@ -20,7 +20,6 @@ classifiers = [
 # bound gets a comment with its reason and an `ignore` in .github/dependabot.yml.
 dependencies = [
     "pydantic>=2.12,<3",
-    "pydantic-settings>=2.11,<3",
     "PyYAML>=6.0.3,<7",
 ]
 
@@ -29,14 +28,11 @@ myproject = "myproject.__main__:main"
 
 [dependency-groups]
 dev = [
-    "hypothesis>=6.140",
     "import-linter>=2.5",
     "mypy>=2.0",
-    "pre-commit>=4.3",
     "pytest>=9.0",
     "pytest-cov>=7.0",
     "pytest-xdist>=3.8",
-    "respx>=0.22",
     "ruff>=0.14",
     "types-PyYAML>=6.0.12",
 ]
@@ -75,7 +71,8 @@ warn_required_dynamic_aliases = true
 [tool.pytest.ini_options]
 minversion = "9.0"
 testpaths = ["tests"]
-# Tests run in parallel on every core (CI runners for private repositories have two).
+# Tests run in parallel on every core. A tiny suite pays ~1 s for it; a grown one saves
+# a third or more (measured on a 340-file suite on a two-core runner).
 addopts = ["--strict-markers", "--strict-config", "-ra", "--import-mode=importlib", "-n", "auto"]
 filterwarnings = ["error"]
 

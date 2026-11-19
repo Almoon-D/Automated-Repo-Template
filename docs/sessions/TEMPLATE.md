@@ -1,4 +1,6 @@
-# Session 01 — Foundation
+# Session NN — Title
+
+<!-- The format of every session prompt. Session 00 writes 01, 02… from it. -->
 
 Model and effort: Opus 5.5, high.
 

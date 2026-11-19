@@ -69,12 +69,15 @@ jobs:
             flags+=(--latest)
           fi
 
-          if [ "$(exists "repos/$REPO/releases/tags/$TAG")" = "yes" ]; then
+          # Captured first: inside `[ … ]` a failing command substitution would be ignored.
+          release=$(exists "repos/$REPO/releases/tags/$TAG")
+          if [ "$release" = "yes" ]; then
             echo "Release $TAG already exists; nothing to do."
             exit 0
           fi
 
-          if [ "$(exists "repos/$REPO/git/ref/tags/$TAG")" = "yes" ]; then
+          tag=$(exists "repos/$REPO/git/ref/tags/$TAG")
+          if [ "$tag" = "yes" ]; then
             echo "Tag $TAG exists without a release; publishing its release."
             gh release create "$TAG" --verify-tag "${flags[@]}"
           else
