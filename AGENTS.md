@@ -3,6 +3,11 @@
 <!-- One paragraph: what the project is, for whom, and the stack. Example:
      "An autonomous X for one Y. Python 3.15, Pydantic v2, <main external API>." -->
 
+**Language.** The owner works in Spanish: talk to them, ask them questions and write PR
+summaries meant for them in Spanish. Everything written for agents (this file, `docs/`
+except `GITHUB_SETTINGS.md`, prompts, code, comments, commits) is in English.
+`README.md` and `docs/GITHUB_SETTINGS.md` are for the owner, in Spanish.
+
 ## Read first — your slice, not whole files
 
 1. Your task: `make prompt S=<id>` prints the common header and your session's prompt
