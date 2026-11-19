@@ -4,12 +4,14 @@ Una frase: qué hace y para quién.
 
 ## Cómo usar esta plantilla (borra esta sección después)
 
-1. En GitHub, en la plantilla: **Use this template → Create a new repository**. Sin marcar
-   *Include all branches*: el proyecto nuevo empieza sin historial y en la versión 0.0.0.
+1. En GitHub, en la plantilla: **Use this template → Create a new repository**, público o
+   privado. Sin marcar *Include all branches*: el proyecto nuevo empieza sin historial y en
+   la versión 0.0.0.
 2. En el repositorio nuevo, abre una sesión de Claude Code y pídele:
    `make setup`, `python3 scripts/init_project.py <nombre_del_paquete> --author "Tu Nombre"`,
    `uv lock` y `make check`, y que lo suba en un PR.
-3. Ajustes del repositorio nuevo: [`docs/GITHUB_SETTINGS.md`](docs/GITHUB_SETTINGS.md).
+3. Ajustes del repositorio nuevo: [`docs/GITHUB_SETTINGS.md`](docs/GITHUB_SETTINGS.md) (si es
+   público, también su última sección).
 4. Rellena `docs/MASTER_PLAN.md` y la primera sesión en `docs/sessions/01-foundation.md`.
    Esa sesión publica la versión 0.1.0.
 5. Revisa la licencia: por defecto es AGPL-3.0 (`LICENSE` y `license` en `pyproject.toml`).

@@ -1,4 +1,5 @@
-# Dependabot, tuned for a private repository on GitHub Free.
+# Dependabot, tuned for GitHub Free: the binding budget is a private repository's, and a
+# public one loses nothing by it.
 #
 # Dependabot's own jobs are free, but every pull request it opens runs CI, which is not.
 # So: one batch a month, every non-major update in one pull request per ecosystem, and a
