@@ -1,7 +1,8 @@
 # Session 00 — Plan the project
 
-Model and effort: Opus 5.5, high. The owner is not technical: talk to them in their
-language, in plain words, one short question at a time.
+Model and effort: Opus 5.5, high. The owner is not technical: talk to them in Spanish, in
+plain words, one short question at a time. The files you write are in English (AGENTS.md →
+Language); summarise them for the owner in Spanish.
 
 ## Goal
 
