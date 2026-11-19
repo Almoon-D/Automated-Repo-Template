@@ -10,7 +10,8 @@ Model and effort: Sonnet 5.5, high.
    if the reason is lasting, add an `ignore` with that reason to `.github/dependabot.yml`.
 2. Close Dependabot pull requests that are obsolete (the dependency is already at or past
    that version).
-3. Toolchains: is there a newer stable Python (or other runtime the project uses)? If so,
+3. Toolchains: patch releases (3.15.2 → 3.15.3) arrive by themselves through `make setup`
+   and CI. Is there a newer stable minor Python (or other runtime the project uses)? If so,
    move to it (`.python-version`, `requires-python`, ruff and mypy targets) when its
    dependencies have wheels, with a decision record.
 4. Dated values in `config/` (anything with a source and a date): refresh each.

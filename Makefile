@@ -9,6 +9,8 @@ setup:  ## Update uv, install the locked environment (uv-managed Python) and the
 	@# An old uv does not know the newest Python. `self update` works for the standalone
 	@# installer; cloud sessions ship uv another way, where `tool install` replaces it.
 	uv self update 2>/dev/null || uv tool install --force uv
+	@# Newest patch of every installed Python (3.15.2 → 3.15.3); the environment follows it.
+	uv python upgrade
 	uv sync --locked
 	$(UV_RUN) pre-commit install
 
