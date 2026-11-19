@@ -3,10 +3,11 @@
 <!-- One paragraph: what the project is, for whom, and the stack. Example:
      "An autonomous X for one Y. Python 3.15, Pydantic v2, <main external API>." -->
 
-**Language.** The owner works in Spanish: talk to them, ask them questions and write PR
-summaries meant for them in Spanish. Everything written for agents (this file, `docs/`
-except `GITHUB_SETTINGS.md`, prompts, code, comments, commits) is in English.
-`README.md` and `docs/GITHUB_SETTINGS.md` are for the owner, in Spanish.
+**Language.** The owner works in Spanish: talk to them, ask them questions and give them the
+end-of-session report in Spanish. Every file is in English — this file, `docs/`, prompts,
+code, comments, `CHANGELOG.md`, commits, and PR titles and descriptions (a squash merge
+turns the PR into the commit on `main`) — except `README.md` and `docs/GITHUB_SETTINGS.md`,
+which are for the owner, in Spanish.
 
 ## Read first — your slice, not whole files
 
@@ -149,6 +150,11 @@ Where `gh` is missing or unauthenticated, the environment's GitHub tools do the 
    fix PR at once under this protocol.
 5. **Release.** If the version changed, confirm the release run succeeded
    (`gh run list --workflow release.yml --limit 1`) and `gh release view v<version>` exists.
+6. **Report.** End with one message to the owner, in Spanish and plain words: what now works
+   and how to see it; the PR link; anything only they can do (a setting, a credential, a
+   decision); and the next step, as the exact prompt to paste with the model and effort to
+   pick, e.g. `Ejecuta la sesión 02: make prompt S=02` — Opus 5.5, high. If the PR stays
+   open, say why and what they must decide instead.
 
 Never merge with failing CI, unresolved blocking findings, or an unchecked safety box. After
 three rounds with blockers left: leave the PR open, label it `needs-owner`, and summarise why.
