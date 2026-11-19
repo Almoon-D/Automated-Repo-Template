@@ -1,0 +1,15 @@
+# Maintenance session (monthly, after Dependabot's batch on the 1st)
+
+Model and effort: Sonnet 5.5, high.
+
+1. Open Dependabot pull requests: for each, read the upstream release notes for breaking
+   changes. If several are green, check out the newest `main`, combine them on one branch,
+   run `make check` once and merge that single PR (one CI run instead of one per update);
+   close the originals with a link to it. A red one: fix it, or close it with the reason and,
+   if the reason is lasting, add an `ignore` with that reason to `.github/dependabot.yml`.
+2. Close Dependabot pull requests that are obsolete (the dependency is already at or past
+   that version).
+3. Dated values in `config/` (anything with a source and a date): refresh each.
+4. ROADMAP: close resolved follow-ups; archive old session-log entries past ~300 lines.
+5. Bump the patch version with its CHANGELOG section, then finish with the end-of-session
+   protocol in AGENTS.md.

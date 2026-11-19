@@ -1,0 +1,49 @@
+name: CI
+
+# One job, `ci`, running exactly what a contributor runs locally: `make check`.
+#
+# Budget (private repository on GitHub Free): pull requests only. A push to `main` is not
+# rebuilt, because main only moves by squash-merging a pull request that CI has just tested,
+# and the agent runs `make check` on main after every merge (AGENTS.md, end-of-session
+# protocol). Changes that touch only prose skip CI; run `make check` locally for those.
+# Run it by hand from the Actions tab (workflow_dispatch) whenever main needs a fresh proof.
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "LICENSE"
+      - ".github/pull_request_template.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push to the same pull request cancels the run it supersedes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      UV_PYTHON_PREFERENCE: only-managed
+    steps:
+      # Every action is pinned by commit; Dependabot keeps the pins and their comments current.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      # The Python version comes from .python-version, the uv version from pyproject.toml
+      # ([tool.uv] required-version): one source each.
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
+        with:
+          enable-cache: true
+
+      - name: Install the locked environment
+        run: uv sync --locked
+
+      - name: make check
+        run: make check

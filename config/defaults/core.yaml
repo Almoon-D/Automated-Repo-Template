@@ -1,0 +1,3 @@
+# Expert defaults. The owner overrides any key in config/owner.yaml.
+timezone: Europe/Madrid
+log_level: INFO

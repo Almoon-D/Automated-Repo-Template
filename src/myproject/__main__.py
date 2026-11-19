@@ -1,0 +1,24 @@
+"""Command-line entry point: ``uv run myproject --help``."""
+
+import argparse
+from collections.abc import Sequence
+
+from myproject import __version__
+from myproject.config import load_settings
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="myproject")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    sub = parser.add_subparsers(dest="command")
+    sub.add_parser("config", help="validate the configuration and print it")
+    args = parser.parse_args(argv)
+    if args.command == "config":
+        print(load_settings().model_dump_json(indent=2))
+        return 0
+    parser.print_help()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
