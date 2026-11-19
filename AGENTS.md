@@ -1,7 +1,7 @@
 # AGENTS.md — myproject
 
 <!-- One paragraph: what the project is, for whom, and the stack. Example:
-     "An autonomous X for one Y. Python 3.14, Pydantic v2, <main external API>." -->
+     "An autonomous X for one Y. Python 3.15, Pydantic v2, <main external API>." -->
 
 ## Read first — your slice, not whole files
 
@@ -51,6 +51,11 @@ plan or your prompt, stop and report it in the PR description before writing cod
 
 ## Engineering rules
 
+- **Current toolchains.** The newest stable Python (one place: `.python-version`, mirrored in
+  `requires-python`), the newest uv (`make setup` updates it) and dependencies at their
+  newest compatible release. A project that needs another language or runtime (Node,
+  Rust, a database, a Docker base image) takes its newest stable or LTS release, pins it in
+  one file, and adds its ecosystem to `.github/dependabot.yml` in the same PR.
 - **Nothing hardcoded.** Values live in `config/` (expert defaults in `config/defaults/`,
   owner overrides in `config/owner.yaml`). Every key has a consumer; no magic numbers on a
   critical path.
@@ -88,8 +93,9 @@ Every CI run is billed against a small monthly allowance.
   `make check` locally for those and say so in the PR.
 - Never add a workflow, a matrix or a scheduled job without a decision in `docs/decisions/`
   that states its monthly cost in minutes.
-- Dependabot pull requests belong to the maintenance session (`make prompt S=maintenance`),
-  never to a build session.
+- Dependabot: CI merges its minor, patch and security pull requests by itself once green.
+  Majors and red ones belong to the maintenance session (`make prompt S=maintenance`), never
+  to a build session.
 
 ## Session workflow
 
@@ -100,7 +106,8 @@ Every CI run is billed against a small monthly allowance.
 4. In the same PR: the session-log entry in `docs/ROADMAP.md` (at most 15 lines: landed,
    deferred, live findings, VERIFY-LIVE items); a new file in `docs/decisions/` per real
    decision (at most 12 lines, added to the index); a `CHANGELOG.md` section; the version in
-   `pyproject.toml` (minor per session, patch for fixes). Move your prompt file to
+   `pyproject.toml` (minor per session, patch for fixes; a new project starts at 0.0.0 and
+   its first session releases 0.1.0). Move your prompt file to
    `docs/sessions/done/`. Never create or push tags: the release workflow does.
 5. You may correct later prompts in `docs/sessions/` only to fix facts, paths or
    dependencies your work changed — never to add scope. Log each edit.
@@ -139,7 +146,7 @@ three rounds with blockers left: leave the PR open, label it `needs-owner`, and 
 ## Commands
 
 ```
-make setup                 # uv sync, pre-commit hooks
+make setup                 # newest uv, uv sync, pre-commit hooks (run it first)
 make check                 # format, lint, types, import contracts, tests, coverage
 make test                  # pytest only
 make prompt S=01           # the prompt for session 01

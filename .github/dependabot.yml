@@ -1,12 +1,16 @@
 # Dependabot, tuned for a private repository on GitHub Free.
 #
 # Dependabot's own jobs are free, but every pull request it opens runs CI, which is not.
-# So: one batch a month, timed for the monthly maintenance session that merges it
-# (docs/sessions/maintenance.md); no automatic rebases (each rebase re-runs CI); a week of
-# cooldown so a release that is replaced within days never reaches us; and every
-# non-major update in one pull request per ecosystem. Majors arrive one by one, because
-# each needs reading. Security updates are not on this schedule: GitHub opens them as soon
-# as an advisory lands, when they are enabled in Settings → Advanced Security.
+# So: one batch a month, every non-major update in one pull request per ecosystem, and a
+# week of cooldown so a release that is replaced within days never reaches us. CI merges
+# those batches by itself once green (.github/workflows/ci.yml → dependabot-merge), so they
+# are open for minutes and seldom need a rebase. Majors arrive one by one and wait for the
+# monthly maintenance session (docs/sessions/maintenance.md), because each needs reading.
+# Security updates are not on this schedule: GitHub opens them as soon as an advisory lands
+# (Settings → Advanced Security → Dependabot security updates).
+#
+# A project that adds another language or a Dockerfile adds its ecosystem here, with the
+# same schedule, cooldown and grouping (see the commented docker block).
 version: 2
 updates:
   - package-ecosystem: uv
@@ -16,7 +20,6 @@ updates:
       time: "06:00"
       timezone: Europe/Madrid
     open-pull-requests-limit: 3
-    rebase-strategy: disabled
     cooldown:
       default-days: 7
     labels: [dependencies]
@@ -43,7 +46,6 @@ updates:
       time: "06:00"
       timezone: Europe/Madrid
     open-pull-requests-limit: 2
-    rebase-strategy: disabled
     cooldown:
       default-days: 7
     labels: [dependencies]
@@ -51,16 +53,19 @@ updates:
       prefix: chore
       include: scope
     groups:
-      actions:
-        patterns: ["*"]
+      actions-minor-and-patch:
+        update-types: [minor, patch]
 
   # Uncomment when the project ships a Dockerfile: base images are dependencies too.
   # - package-ecosystem: docker
   #   directory: /deploy
   #   schedule:
   #     interval: monthly
+  #     time: "06:00"
+  #     timezone: Europe/Madrid
   #   open-pull-requests-limit: 1
-  #   rebase-strategy: disabled
+  #   cooldown:
+  #     default-days: 7
   #   groups:
-  #     images:
-  #       patterns: ["*"]
+  #     images-minor-and-patch:
+  #       update-types: [minor, patch]

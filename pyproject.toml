@@ -1,19 +1,19 @@
 [build-system]
-requires = ["hatchling>=1.27"]
+requires = ["hatchling>=1.33"]
 build-backend = "hatchling.build"
 
 [project]
 name = "myproject"
-version = "0.1.0"
+version = "0.0.0"
 description = "One sentence: what this project does and for whom."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.15,<3.16"
 authors = [{ name = "Your Name" }]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
-    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Typing :: Typed",
 ]
 # Runtime dependencies: a lower bound and the next major as the upper bound. A tighter
@@ -43,16 +43,13 @@ dev = [
 
 [tool.uv]
 python-preference = "only-managed"
-# CI's setup-uv reads this (one source for the uv version). A floor, not a pin: Claude Code
-# cloud sessions ship their own uv and must not be locked out.
-required-version = ">=0.11"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/myproject"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py314"
+target-version = "py315"
 src = ["src", "tests"]
 # The release workflow runs this script on its pinned runner's own Python 3.12.
 per-file-target-version = { ".github/scripts/*.py" = "py312" }
@@ -64,7 +61,7 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM", "C4", "RUF", "PT", "PTH", "ARG",
 "tests/**" = ["ARG001", "ARG002"]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.15"
 strict = true
 files = ["src"]
 warn_unreachable = true
@@ -85,7 +82,7 @@ filterwarnings = ["error"]
 [tool.coverage.run]
 source = ["myproject"]
 branch = true
-# sys.monitoring: much lower overhead than the classic tracer on Python 3.14.
+# sys.monitoring: much lower overhead than the classic tracer.
 core = "sysmon"
 
 [tool.coverage.report]

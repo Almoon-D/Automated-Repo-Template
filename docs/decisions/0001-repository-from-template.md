@@ -1,12 +1,13 @@
 # 0001 — Repository conventions from the template
 
-- Date: 2026-11-18 · Status: accepted
-- Context: a private repository on GitHub Free, built by agent sessions that open, review
-  and merge their own pull requests.
-- Decision: CI on pull requests only, skipped for prose; Dependabot monthly, grouped, with
-  cooldown and no automatic rebases, merged by the monthly maintenance session; releases
-  published from `CHANGELOG.md` when the version changes; one file per decision and per
-  session prompt so an agent reads only its slice.
-- Rejected: CI on every push to `main` (it repeats the pull request's run); weekly
-  Dependabot with automatic rebases (each rebase is a full CI run).
-- Cost: about one CI run per pull request plus one per Dependabot batch.
+- Date: 2026-11-19 · Status: accepted
+- Context: a repository on GitHub Free (private ones get a small Actions allowance and no
+  branch protection), built by agent sessions that open, review and merge their own PRs.
+- Decision: `ci` on pull requests only, always reporting (prose-only changes pass in
+  seconds); Dependabot monthly, grouped, with a week of cooldown, its non-major updates
+  merged by CI once green; releases published from `CHANGELOG.md` when the version changes,
+  starting at 0.1.0 (0.0.0 publishes nothing); one file per decision and per session prompt.
+- Rejected: CI on every push to `main` (it repeats the PR's run); weekly Dependabot left
+  open for a monthly session (each rebase re-runs CI); GitHub auto-merge (needs branch
+  protection, unavailable to private repositories on Free).
+- Cost: one CI run per pull request plus about two short runs per Dependabot batch.
