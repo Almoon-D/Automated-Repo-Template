@@ -43,3 +43,5 @@ make setup     # entorno + hooks
 make check     # todo lo que corre CI
 uv run myproject --help
 ```
+
+Copyright (c) 2027 AlmoonD. All rights reserved.
