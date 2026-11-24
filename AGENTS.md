@@ -176,6 +176,8 @@ make prompt S=00           # the prompt for session 00 (or 01, maintenance…)
 uv run myproject --help
 ```
 
+
+Copyright (c) 2027 Almoon-D. All rights reserved.
 ## Layout
 
 `src/myproject/` per `docs/MASTER_PLAN.md` → Layout · `config/` · `tests/` · `docs/` ·
